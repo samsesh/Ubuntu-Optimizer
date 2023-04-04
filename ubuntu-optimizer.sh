@@ -57,12 +57,9 @@ installations() {
   sudo apt -y purge firewalld
 
   # Install
-  sudo apt -y install software-properties-common apt-transport-https snapd snap iptables lsb-release ca-certificates ubuntu-keyring gnupg2 apt-utils cron bash-completion curl git unzip ufw wget preload locales nano vim python3 jq qrencode socat busybox net-tools haveged htop
+  sudo apt -y install autossh software-properties-common apt-transport-https iptables lsb-release ca-certificates ubuntu-keyring gnupg2 apt-utils cron bash-completion curl git unzip ufw wget preload locales nano vim python3 jq qrencode socat busybox net-tools haveged htop
   sleep 0.5
 
-  # Snap Install & Refresh
-  sudo snap install core
-  sudo snap refresh core
 }
 
 
