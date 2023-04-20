@@ -1,24 +1,21 @@
 #!/bin/sh
 
-
 # Intro
-echo 
+echo
 echo $(tput setaf 2)=======================================================$(tput sgr0)
 echo "$(tput setaf 2)----- This script will automatically Optimize your Ubuntu Server.$(tput sgr0)"
-echo "$(tput setaf 2)----- Root access is required.$(tput sgr0)" 
-echo "$(tput setaf 2)----- Source is @ https://github.com/samsesh/ubuntu-optimizer$(tput sgr0)" 
+echo "$(tput setaf 2)----- Root access is required.$(tput sgr0)"
+echo "$(tput setaf 2)----- Source is @ https://github.com/samsesh/ubuntu-optimizer$(tput sgr0)"
 echo $(tput setaf 2)=======================================================$(tput sgr0)
-echo 
+echo
 
 sleep 1
-
 
 # Declare Paths
 SYS_PATH="/etc/sysctl.conf"
 LIM_PATH="/etc/security/limits.conf"
 PROF_PATH="/etc/profile"
 SSH_PATH="/etc/ssh/sshd_config"
-
 
 # Check Root User
 check_if_running_as_root() {
@@ -29,7 +26,6 @@ check_if_running_as_root() {
   fi
 }
 
-
 # Check if OS is Ubuntu
 check_ubuntu() {
   if [[ $(lsb_release -si) != "Ubuntu" ]]; then
@@ -38,36 +34,32 @@ check_ubuntu() {
   fi
 }
 
-
 # Update & Upgrade & Remove & Clean
 complete_update() {
-  sudo apt update
-  sudo apt -y upgrade
+  apt update
+  apt -y upgrade
   sleep 0.5
-  sudo apt -y dist-upgrade
-  sudo apt -y autoremove
-  sudo apt -y autoclean
-  sudo apt -y clean
+  apt -y dist-upgrade
+  apt -y autoremove
+  apt -y autoclean
+  apt -y clean
 }
-
 
 ## Install useful packages
 installations() {
   # Purge firewalld to install UFW.
-  sudo apt -y purge firewalld
+  apt -y purge firewalld
 
   # Install
-  sudo apt -y install nload autossh ssh sshuttle software-properties-common apt-transport-https iptables lsb-release ca-certificates ubuntu-keyring gnupg2 apt-utils cron bash-completion curl git unzip zip ufw wget preload locales nano vim python3 jq qrencode socat busybox net-tools haveged htop
+  apt -y install nload autossh ssh sshuttle software-properties-common apt-transport-https iptables lsb-release ca-certificates ubuntu-keyring gnupg2 apt-utils cron bash-completion curl git unzip zip ufw wget preload locales nano vim python3 jq qrencode socat busybox net-tools haveged htop
   sleep 0.5
 
 }
 
-
 # Enable packages at server boot
 enable_packages() {
-  sudo systemctl enable preload haveged snapd cron
+  systemctl enable preload haveged snapd cron
 }
-
 
 ## Swap Maker
 swap_maker() {
@@ -78,22 +70,22 @@ swap_maker() {
   SWAP_PATH="/swapfile"
 
   # Make Swap
-  sudo fallocate -l $SWAP_SIZE $SWAP_PATH  # Allocate size
-  sudo chmod 600 $SWAP_PATH                # Set proper permission
-  sudo mkswap $SWAP_PATH                   # Setup swap         
-  sudo swapon $SWAP_PATH                   # Enable swap
-  echo "$SWAP_PATH   none    swap    sw    0   0" >> /etc/fstab # Add to fstab
+  fallocate -l $SWAP_SIZE $SWAP_PATH                           # Allocate size
+  chmod 600 $SWAP_PATH                                         # Set proper permission
+  mkswap $SWAP_PATH                                            # Setup swap
+  swapon $SWAP_PATH                                            # Enable swap
+  echo "$SWAP_PATH   none    swap    sw    0   0" >>/etc/fstab # Add to fstab
   echo $(tput setaf 2)SWAP Optimized.$(tput sgr0)
   echo
-  
+
 }
 
 enable_ipv6_support() {
-    if [[ $(sysctl -a | grep 'disable_ipv6.*=.*1') || $(cat /etc/sysctl.{conf,d/*} | grep 'disable_ipv6.*=.*1') ]]; then
-        sed -i '/disable_ipv6/d' /etc/sysctl.{conf,d/*}
-        echo 'net.ipv6.conf.all.disable_ipv6 = 0' >/etc/sysctl.d/ipv6.conf
-        sysctl -w net.ipv6.conf.all.disable_ipv6=0
-    fi
+  if [[ $(sysctl -a | grep 'disable_ipv6.*=.*1') || $(cat /etc/sysctl.{conf,d/*} | grep 'disable_ipv6.*=.*1') ]]; then
+    sed -i '/disable_ipv6/d' /etc/sysctl.{conf,d/*}
+    echo 'net.ipv6.conf.all.disable_ipv6 = 0' >/etc/sysctl.d/ipv6.conf
+    sysctl -w net.ipv6.conf.all.disable_ipv6=0
+  fi
 }
 
 # Remove Old SYSCTL Config to prevent duplicates.
@@ -134,54 +126,52 @@ remove_old_sysctl() {
 
 }
 
-
 ## SYSCTL Optimization
 sysctl_optimizations() {
   # Optimize Swap Settings
-  echo 'vm.swappiness=10' >> $SYS_PATH
-  echo 'vm.vfs_cache_pressure=50' >> $SYS_PATH
+  echo 'vm.swappiness=10' >>$SYS_PATH
+  echo 'vm.vfs_cache_pressure=50' >>$SYS_PATH
   sleep 0.5
 
   # Optimize Network Settings
-  echo 'fs.file-max = 1000000' >> $SYS_PATH
+  echo 'fs.file-max = 1000000' >>$SYS_PATH
 
-  echo 'net.core.rmem_default = 1048576' >> $SYS_PATH
-  echo 'net.core.rmem_max = 2097152' >> $SYS_PATH
-  echo 'net.core.wmem_default = 1048576' >> $SYS_PATH
-  echo 'net.core.wmem_max = 2097152' >> $SYS_PATH
-  echo 'net.core.netdev_max_backlog = 16384' >> $SYS_PATH
-  echo 'net.core.somaxconn = 32768' >> $SYS_PATH
-  echo 'net.ipv4.tcp_fastopen = 3' >> $SYS_PATH
-  echo 'net.ipv4.tcp_mtu_probing = 1' >> $SYS_PATH
+  echo 'net.core.rmem_default = 1048576' >>$SYS_PATH
+  echo 'net.core.rmem_max = 2097152' >>$SYS_PATH
+  echo 'net.core.wmem_default = 1048576' >>$SYS_PATH
+  echo 'net.core.wmem_max = 2097152' >>$SYS_PATH
+  echo 'net.core.netdev_max_backlog = 16384' >>$SYS_PATH
+  echo 'net.core.somaxconn = 32768' >>$SYS_PATH
+  echo 'net.ipv4.tcp_fastopen = 3' >>$SYS_PATH
+  echo 'net.ipv4.tcp_mtu_probing = 1' >>$SYS_PATH
 
-  echo 'net.ipv4.tcp_retries2 = 8' >> $SYS_PATH
-  echo 'net.ipv4.tcp_slow_start_after_idle = 0' >> $SYS_PATH
+  echo 'net.ipv4.tcp_retries2 = 8' >>$SYS_PATH
+  echo 'net.ipv4.tcp_slow_start_after_idle = 0' >>$SYS_PATH
 
-  echo 'net.ipv6.conf.all.disable_ipv6 = 0' >> $SYS_PATH
-  echo 'net.ipv6.conf.default.disable_ipv6 = 0' >> $SYS_PATH
-  echo 'net.ipv6.conf.all.forwarding = 1' >> $SYS_PATH
+  echo 'net.ipv6.conf.all.disable_ipv6 = 0' >>$SYS_PATH
+  echo 'net.ipv6.conf.default.disable_ipv6 = 0' >>$SYS_PATH
+  echo 'net.ipv6.conf.all.forwarding = 1' >>$SYS_PATH
 
   # Use BBR
-  echo 'net.core.default_qdisc = fq' >> $SYS_PATH 
-  echo 'net.ipv4.tcp_congestion_control = bbr' >> $SYS_PATH
+  echo 'net.core.default_qdisc = fq' >>$SYS_PATH
+  echo 'net.ipv4.tcp_congestion_control = bbr' >>$SYS_PATH
 
   sysctl -p
-  echo 
+  echo
   echo $(tput setaf 2)Network Optimized.$(tput sgr0)
-  echo 
+  echo
 }
-
 
 # Remove old SSH config to prevent duplicates.
 remove_old_ssh_conf() {
   # Make a backup of the original sshd_config file
   cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 
-  echo 
+  echo
   echo "$(tput setaf 2)Default SSH Config file Saved. Directory: /etc/ssh/sshd_config.bak$(tput sgr0)"
-  echo 
+  echo
   sleep 1
-  
+
   # Disable DNS lookups for connecting clients
   sed -i 's/#UseDNS yes/UseDNS no/' $SSH_PATH
 
@@ -204,7 +194,6 @@ remove_old_ssh_conf() {
 
 }
 
-
 ## Update SSH config
 update_sshd_conf() {
   # Enable TCP keep-alive messages
@@ -215,7 +204,7 @@ update_sshd_conf() {
   echo "ClientAliveCountMax 100" | tee -a $SSH_PATH
 
   # Permit Root Login
-  echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+  echo "PermitRootLogin yes" >>/etc/ssh/sshd_config
 
   # Allow agent forwarding
   echo "AllowAgentForwarding yes" | tee -a $SSH_PATH
@@ -232,53 +221,50 @@ update_sshd_conf() {
   # Restart the SSH service to apply the changes
   service ssh restart
 
-  echo 
+  echo
   echo $(tput setaf 2)SSH Optimized Successfully!$(tput sgr0)
-  echo 
+  echo
 }
-
 
 # System Limits Optimizations
 limits_optimizations() {
-  echo '* soft     nproc          655350' >> $LIM_PATH
-  echo '* hard     nproc          655350' >> $LIM_PATH
-  echo '* soft     nofile         655350' >> $LIM_PATH
-  echo '* hard     nofile         655350' >> $LIM_PATH
+  echo '* soft     nproc          655350' >>$LIM_PATH
+  echo '* hard     nproc          655350' >>$LIM_PATH
+  echo '* soft     nofile         655350' >>$LIM_PATH
+  echo '* hard     nofile         655350' >>$LIM_PATH
 
-  echo 'root soft     nproc          655350' >> $LIM_PATH
-  echo 'root hard     nproc          655350' >> $LIM_PATH
-  echo 'root soft     nofile         655350' >> $LIM_PATH
-  echo 'root hard     nofile         655350' >> $LIM_PATH
+  echo 'root soft     nproc          655350' >>$LIM_PATH
+  echo 'root hard     nproc          655350' >>$LIM_PATH
+  echo 'root soft     nofile         655350' >>$LIM_PATH
+  echo 'root hard     nofile         655350' >>$LIM_PATH
 
-  sudo sysctl -p
-  echo 
+  sysctl -p
+  echo
   echo $(tput setaf 2)System Limits Optimized.$(tput sgr0)
-  echo 
+  echo
 }
-
 
 ## UFW Optimizations
 ufw_optimizations() {
   # Open default ports.
-  sudo ufw allow 21
-  sudo ufw allow 21/udp
-  sudo ufw allow 22
-  sudo ufw allow 22/udp
-  sudo ufw allow 80
-  sudo ufw allow 80/udp
-  sudo ufw allow 443
-  sudo ufw allow 443/udp
+  ufw allow 21
+  ufw allow 21/udp
+  ufw allow 22
+  ufw allow 22/udp
+  ufw allow 80
+  ufw allow 80/udp
+  ufw allow 443
+  ufw allow 443/udp
   sleep 0.5
   # Change the UFW config to use System config.
   sed -i 's+/etc/ufw/sysctl.conf+/etc/sysctl.conf+gI' /etc/default/ufw
   # Reload
   ufw reload
   ufw status
-  echo 
+  echo
   echo $(tput setaf 2)Firewall Optimized.$(tput sgr0)
-  echo 
+  echo
 }
-
 
 # RUN BABY, RUN
 check_if_running_as_root
@@ -320,13 +306,12 @@ sleep 1
 ufw_optimizations
 sleep 0.5
 
-
 # Outro
-echo 
+echo
 echo $(tput setaf 2)=========================$(tput sgr0)
 echo "$(tput setaf 2)----- Done! Server is Optimized.$(tput sgr0)"
 echo "$(tput setaf 3)----- Reboot the system to apply one...$(tput sgr0)"
 echo $(tput setaf 2)=========================$(tput sgr0)
-sudo sleep 5 ;
-echo 
-echo 
+sleep 5
+echo
+echo
