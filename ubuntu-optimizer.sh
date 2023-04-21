@@ -56,6 +56,11 @@ installations() {
 
 }
 
+speedtestinstall() {
+  curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
+  sudo apt-get install speedtest
+}
+
 # Enable packages at server boot
 enable_packages() {
   systemctl enable preload haveged snapd cron
@@ -277,6 +282,9 @@ complete_update
 sleep 0.5
 
 installations
+sleep 0.5
+
+speedtestinstall
 sleep 0.5
 
 enable_packages
