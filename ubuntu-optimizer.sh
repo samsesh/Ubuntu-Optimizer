@@ -57,8 +57,8 @@ installations() {
 }
 
 speedtestinstall() {
-  curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
-  sudo apt-get install speedtest
+  curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash
+  apt-get install speedtest
 }
 
 # Enable packages at server boot
