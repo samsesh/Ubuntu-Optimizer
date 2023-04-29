@@ -308,8 +308,8 @@ sleep 0.5
 installations
 sleep 0.5
 
-speedtestinstall
-sleep 0.5
+#speedtestinstall
+#sleep 0.5
 
 enable_packages
 sleep 0.5
