@@ -1,39 +1,41 @@
 #!/bin/bash
 
-# Check the OS and store the result in the variable 'OS'
+
+# OS Detection
 if [[ $(grep -oP '(?<=^NAME=").*(?=")' /etc/os-release) == "Ubuntu" ]]; then
     OS="ubuntu"
-elif [[ $(grep -oP '(?<=^NAME=").*(?=")' /etc/os-release) == "CentOS Linux" ]]; then
-    OS="centos"
 elif [[ $(grep -oP '(?<=^NAME=").*(?=")' /etc/os-release) == "Debian GNU/Linux" ]]; then
     OS="debian"
-elif [[ $(grep -oP '(?<=^NAME=").*(?=")' /etc/os-release) == "Fedora" ]]; then
+elif [[ $(grep -oP '(?<=^NAME=").*(?=")' /etc/os-release) == "CentOS Stream" ]]; then
+    OS="centos"
+elif [[ $(grep -oP '(?<=^NAME=").*(?=")' /etc/os-release) == "Fedora Linux" ]]; then
     OS="fedora"
 else
-    echo "Unsupported OS, please create an issue to add support for this OS."
+    echo "Unknwon OS, Create an issue here: https://github.com/hawshemi/Linux-Optimizer"
     OS="unknown"
 fi
 
-# Execute different commands depending on which OS is running
+
+# Run Script based on Distros
 case $OS in
 ubuntu)
-    # Code for Ubuntu goes here
-    bash <(curl -s https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/ubuntu-optimizer.sh)
+    # Ubuntu
+    bash <(curl -s https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/scripts/ubuntu-optimizer.sh)
     ;;
 debian)
-    # Code for Debian goes here
-    bash <(curl -s https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/debian-optimizer.sh)
+    # Debian
+    bash <(curl -s https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/scripts/debian-optimizer.sh)
     ;;
 centos)
-    # Code for CentOS goes here
-    bash <(curl -s https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/centos-optimizer.sh)
+    # CentOS
+    bash <(curl -s https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/scripts/centos-optimizer.sh)
     ;;
 fedora)
-    # Code for Fedora goes here
-    bash <(curl -s https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/fedora-optimizer.sh)
+    # Fedora
+    bash <(curl -s https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/scripts/fedora-optimizer.sh)
     ;;
 unknown)
-    # Code for unknown OS goes here
+    # Unknown
     exit 
     ;;
 esac
