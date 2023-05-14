@@ -79,7 +79,7 @@ sudo dnf install -y curl
 
 
 ## Run
-<<<<<<< HEAD
+
 
 ### Ubuntu (16+ LTS), Debian (11+), CentOS (8+ Stream), Fedora (37+):
 ```
@@ -89,12 +89,7 @@ bash <(curl -s https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/l
 ``` bash
 tmux new -s optimizer 'bash <(curl -s https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/linux-optimizer.sh)'
 ```
-=======
-```
-bash <(curl -s https://raw.githubusercontent.com/hawshemi/Linux-Optimizer/main/linux-optimizer.sh)
-```
 
->>>>>>> d87cd98511b206094c4029adb2cc91fddf930cc5
 ## Disclaimer
 This script is provided as-is, without any warranty or guarantee. Use it at your own risk.
 
