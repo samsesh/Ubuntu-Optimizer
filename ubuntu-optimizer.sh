@@ -73,6 +73,7 @@ installations() {
 
   # Install
   apt -y install nload nethogs autossh dropbear stunnel4 ssh iperf sshuttle software-properties-common apt-transport-https iptables lsb-release ca-certificates ubuntu-keyring gnupg2 apt-utils cron bash-completion curl git unzip zip ufw wget preload locales nano vim python3 jq qrencode socat busybox net-tools haveged htop
+  apt -y install network-manager
   sleep 0.5
 
 }
@@ -234,6 +235,10 @@ update_sshd_conf() {
 
   # Allow agent forwarding
   echo "AllowAgentForwarding yes" | tee -a $SSH_PATH
+
+  # Banner
+  echo "SamSesh.net" >> /root/sshbanner.txt
+  echo "Banner /root/sshbanner.txt" | tee -a $SSH_PATH
 
   # Allow TCP forwarding
   echo "AllowTcpForwarding yes" | tee -a $SSH_PATH
